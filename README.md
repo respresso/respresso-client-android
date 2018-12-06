@@ -1,50 +1,38 @@
 # About
 This is the android client for Respresso (https://respresso.io/). Respresso is a collaborative resource management tool for multiplatform projects. It automatically transforms and delivers to your project without assistance. Your assets will be ready for use almost immediately.
 
-[//]: <> # Demo
-[//]: <> ![Demo video]()
+# Demo
+[Demo video](https://youtu.be/gpCc0ihXxfc?t=258)
  
-[//]: <> # How to
- 
+# How to
  Add the Maven repository into your project level gradle:
  ```groovy
  allprojects {
     repositories {
         ...
-       maven {
-            url "https://github.com/pontehu/respresso-client-android/"
-        }
+        maven { url 'https://jitpack.io' }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
   }
   ```
   
  Add the dependency into your app level gradle:
   ```groovy
-  apply plugin: 'hu.ponte.respresso'
+apply plugin: 'hu.ponte.respresso'
 
 respresso {
     projectToken "YOUR_PROJECT_TOKEN"
     resources{
-//		[use this declaration format]
-//        localization.version "1.0+"
-//        appIcon.version "1.0+"
-//		  font.version "1.0+"
-//        icon.version "1.0+"
-		
-//		[OR this declaration format]
-//        require ("color") {
-//            version "1.0+"
-//        }
-
-		[OR this declaration format]
-        require "font:1.1+"
-        require "image:1.2+"
-//         ... other requested resource categories
+        require "localization:1.0+"
+        require "font:1.0+"
+        require "font:1.0+"
+        require "color:1.0+"
+        require "appIcon:1.0+"
     }
-//     Optional
+    
+// Optional
     server "YOUR_SERVER_ADDRESS"
 }
-
   
 dependencies {
 	      implementation 'com.github.pontehu:respresso:0.0.1'
