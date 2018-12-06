@@ -24,7 +24,7 @@ respresso {
     projectToken "YOUR_PROJECT_TOKEN"
     resources{
         require "localization:1.0+"
-        require "font:1.0+"
+        require "image:1.0+"
         require "font:1.0+"
         require "color:1.0+"
         require "appIcon:1.0+"
