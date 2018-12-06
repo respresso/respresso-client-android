@@ -31,7 +31,7 @@ respresso {
     }
     
 // Optional
-    server "YOUR_SERVER_ADDRESS"
+    server "https://app.respresso.io"
 }
   
 dependencies {
