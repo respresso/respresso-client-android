@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><resources>
+    <!--This is a comment from flow config.-->
+    <string name="automatical">It automatically transforms and delivers to your project without assistance. Your assets will be ready for use almost immediately.</string>
+    <string name="collaborative">Help your team focus during the development stage. Developers code, designers deliver graphics, the marketing team, translators manage your localization and this is just the beginning of stress-free development.</string>
+    <string name="collaborative_multiplatform">Respresso is a collaborative resource management tool for multiplatform projects.</string>
+    <string name="hello_respresso">Hello Respresso</string>
+    <string name="security">It takes care of your digital assets (images, texts, colors, fonts, etc.) across multiple platforms and projects.</string>
+</resources>
