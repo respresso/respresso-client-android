@@ -110,7 +110,7 @@ You can create a new module for Respresso. Respresso will synchronize all follow
 
 # Licence
 ```
-Copyright 2018 Ponte.hu Kft
+Copyright 2019 Ponte.hu Kft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
