@@ -15,7 +15,7 @@ The plugin aar needs to be defined in the classpath of your build script. It is 
 buildscript {
     
     dependencies {
-        classpath "hu.ponte.respresso:client-android:0.0.1"
+        classpath "hu.ponte.respresso:client-android:0.0.2"
     }
 }
 ```
