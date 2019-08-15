@@ -15,7 +15,7 @@ The plugin aar needs to be defined in the classpath of your build script. It is 
 buildscript {
     
     dependencies {
-        classpath "hu.ponte.respresso:client-android:0.0.2"
+        classpath "hu.ponte.respresso:client-android:0.0.9"
     }
 }
 ```
@@ -104,6 +104,197 @@ Android Studio may sometimes ignore new resource files. If this is the case, use
 
 ##### Use your own resources
 You can create a new module for Respresso. Respresso will synchronize all followed resources into the "module's res" folder in this case and your main module can contain unique resources.
+
+# Live Localization
+Respresso serve a real-time preview about your localized strings. It shows you that how the translations are going to look like in your mobile app or web. You don't have to wait for a next deployment.
+
+# Obligation
+Live localization is a higher abstraction layer over Respresso core. That is why Respresso usage is mandatory.
+
+# Usage
+
+Add this dependency in your app's build.gradle (app/build.gradle):
+
+```groovy
+ 
+    dependencies {
+		...
+        implementation "hu.ponte.respresso:live-edit-android:0.0.11"
+		...
+    }
+```
+
+## How to turn on/off Respresso live
+Use this snipet if you would like to build your apk without live localization option.
+```groovy
+ 
+	buildTypes {
+		...
+		develop {
+			buildConfigField "Boolean", "RespressoPreRelease", 'true'
+		}
+		release {
+			buildConfigField "Boolean", "RespressoPreRelease", 'false'
+		}
+	}
+```
+
+## Setting up Respresso Live
+Create an application class and register it in your manifest file. Append this snipet into the class:
+Kotlin:
+```Koltlin
+	 override fun onCreate() {
+        super.onCreate()
+
+        Respresso.init(this, BuildConfig.RespressoPreRelease)
+	 }
+```
+
+Java:
+```Java
+	@Override
+    public void onCreate() {
+        super.onCreate();
+
+        Respresso.init(this, BuildConfig.RespressoPreRelease);
+    }
+```
+
+Use these configurations in you activity. (It's recommended that use a BaseActivity).
+Kotlin:
+``` Kotlin
+	override fun attachBaseContext(newBase: Context) {
+        val context = Respresso.wrapContext(newBase)
+        super.attachBaseContext(context)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Respresso.create(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Respresso.destroy(this)
+    }
+	
+```
+Java: 
+``` Java 
+	@Override
+    protected void attachBaseContext(Context newBase) {
+        Context context = Respresso.wrapContext(newBase);
+        super.attachBaseContext(context);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Respresso.create(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Respresso.destroy(this);
+    }
+```
+
+## Update text in a view
+The easiest usage when you bind your text and view by Respresso.
+``` Kotlin
+Respresso.with(context).text(R.string.id_from_strings_xml).withAutoUpdate().into(view)
+```
+
+Let see some alternatives:
+``` Kotlin
+Respresso.with(context).hint(R.string.hint_id).withAutoUpdate().into(view)
+Respresso.with(context).error(R.string.error_id).withAutoUpdate().into(view)
+Respresso.with(context).title(R.string.title_id).withAutoUpdate().into(view)
+Respresso.with(context).subtitle(R.string.subtitle_id).withAutoUpdate().into(view)
+```
+
+The technique is really simple. You have to use
+
+Respresso.with(context).text()  -> instead of view.setText()
+Respresso.with(context).hint()  -> instead of view.hint()
+Respresso.with(context).title() -> instead of Toolbar/ActionBar/MenuItem.setTitle()
+etc.
+ 
+and you concatenate more modifiers when a view has more options, like an EditTextView:
+Respresso.with(context).text(R.string.text_id_from_strings_xml).hint(R.string.hint_id_from_strings_xml).withAutoUpdate().into(edit_text_view)
+
+### Update text in a CustomView
+Some cases Respresso unable to fill the view with demanded text(s). Don't worry, You can get notification about changes. 
+Use this form in case of single text: 
+
+``` Kotlin
+Respresso.with(context).string(R.string.text_id_from_strings_xml).into(view).dataReadyText = { view.setTextSomehow = it }
+```
+
+```Java
+Respresso.with(context).string(R.string.text_id_from_strings_xml).into(view).setOnDataReadyText(new DataReadyText() {
+            @Override
+            public void onDataReady(@Nullable String text) {
+                view.setTextSomehow(text)
+            }
+        });
+```
+Use this form in case of multiple texts: 
+``` Kotlin
+Respresso.with(context).strings(arrayOf(
+			RespressoStrings(R.string.first_text_id_from_strings_xml)
+			RespressoStrings(R.string.second_text_id_from_strings_xml, "TAG")
+		)
+	).into(view).dataReadyTexts = { 
+		view.setTextSomehow1 = it[0].text
+		if(it[1].TAG == "TAG")
+			view.setTextSomehow2 = it[1].text
+	}
+```
+
+```Java
+	Respresso.with(this).strings(new RespressoStrings[]{
+                new RespressoStrings(R.string.name, 1),
+                new RespressoStrings(R.string.name, 2)
+        }).into(tv1).setOnDataReadyTexts(new DataReadyTexts() {
+            @Override
+            public void onDataReady(@Nullable RespressoText[] texts) {
+                view.setTextSomehow1 = it[0].getText())
+				if(it[1].getTAG() == "TAG")
+					view.setTextSomehow2 = it[1].getText()
+            }
+        });
+```
+
+### Update possibilities
+withAutoUpdate will update your texts whenever it changes if it can.
+``` Kotlin
+Respresso.with(context).text(R.string.id).withAutoUpdate().into(view)
+```
+withNotifyUpdate will send you a notification into dataReady listener and you can handle it. It is not refresh your views content automatically.
+``` Kotlin
+Respresso.with(context).text(R.string.id).withNotifyUpdate().into(view)
+```
+noUpdate will fill your view only once. It is not send notification and not update your text.
+``` Kotlin
+Respresso.with(context).text(R.string.id).noUpdate().into(view)
+```
+
+# Next steps
+1. Check above instructions
+2. Go to respresso(https://app.respresso.io) sign in and choose a project
+3. Select localization in the left panel and click the preferred version
+4. Click on the Live Editor button on the top right area
+
+5. Get your phone and shake it.
+6. Switch on Localization in the popup window
+7. Now your modifications are going to appearance after you push the save button on the web
+
+8. Shake your phone again if it is need and switch on QR
+9. Scan the QR Code which visible in your web browser's top right section
+
+Let see what happened after 7th option. You activated a visible items filter and your list have less elements than before and don't have to use Save button to get updated texts. Be careful, this modification stored just in your phone's memory and you can lose it. Use the Save button to store your modifications. 
 
 # Licence
 ```
