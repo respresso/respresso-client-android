@@ -8,7 +8,7 @@ apply plugin: "hu.ponte.respresso"
 
 respresso {
 
-    projectToken "e989c186-4884-493f-8c00-870bc2e7add2"
+    projectToken "a974c2a6-c735-403d-82df-773008bd65c6"
     resources {
         require "localization:1.0.0"
         require "color:1.0.0"
@@ -31,9 +31,16 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "Boolean", "RespressoPreRelease", 'true'
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "Boolean", "RespressoPreRelease", 'false'
         }
     }
 }
@@ -46,4 +53,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation "hu.ponte.respresso:live-edit-android:0.0.11"
 }

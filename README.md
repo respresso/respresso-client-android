@@ -140,23 +140,23 @@ Use this snipet if you would like to build your apk without live localization op
 ```
 
 ## Setting up Respresso Live
-Create an application class and register it in your manifest file. Append this snipet into the class:
+Create an application class and register it in your manifest file. Append this snipet into the class:  
 Kotlin:
 ```Koltlin
-	 override fun onCreate() {
-        super.onCreate()
+	override fun onCreate() {
+	super.onCreate()
 
-        Respresso.init(this, BuildConfig.RespressoPreRelease)
-	 }
+	Respresso.init(this, BuildConfig.RespressoPreRelease)
+}
 ```
 
 Java:
 ```Java
 	@Override
-    public void onCreate() {
-        super.onCreate();
+	public void onCreate() {
+		super.onCreate();
 
-        Respresso.init(this, BuildConfig.RespressoPreRelease);
+		Respresso.init(this, BuildConfig.RespressoPreRelease);
     }
 ```
 
