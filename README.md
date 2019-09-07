@@ -1,5 +1,5 @@
-# Introduction 
-Respresso is a centralized resource manager for shared Android and iOS projects.
+# Introduction
+Respresso is a centralized resource manager for shared Android, [iOS](https://github.com/pontehu/respresso-sync-client#ios) and [web](https://github.com/pontehu/respresso-sync-client#web) projects.
 It allows you to simply import the latest assets into your workspace.
 You may store several versions of the same resource in the cloud and pick the ones you need to import.
 Respresso currently supports five types of resources:
@@ -8,14 +8,15 @@ Respresso currently supports five types of resources:
 * Localization
 * Fonts
 * Colors
+* Raw
 
 # Usage
 The plugin aar needs to be defined in the classpath of your build script. It is directly available on Maven central. This snippet shows how to add repositories to your root build.gradle:
 ```groovy
 buildscript {
-    
+
     dependencies {
-        classpath "hu.ponte.respresso:client-android:0.0.9"
+        classpath "hu.ponte.respresso:client-android:1.0.0"
     }
 }
 ```
@@ -44,22 +45,22 @@ Now you can build your project and Respresso will import all resources that were
 Simply press the Run button for your "app". Respresso will synchronize all resources before builds since its plugin is built into your build flow.
 
 ### Manual usage
-To synchronize resources without building, use gradle. Use the GUI "Tasks/other/getRespressoResForDebug"   
+To synchronize resources without building, use gradle. Use the GUI "Tasks/other/getRespressoResForDebug"
 
-![Respresso synchronize GUI](/images/respresso-gradle.png)  
+![Respresso synchronize GUI](/images/respresso-gradle.png)
 
-or use terminal and type:
-Windows: 
+or use terminal and type:  
+Windows:
 ```
 gradlew getRespressoResForDebug
 ```
 
-Linux: 
+Linux:
 ```
 ./gradlew getRespressoResForDebug
 ```
 
-Mac: 
+Mac:
 ```
 ./gradlew getRespressoResForDebug
 ```
@@ -77,7 +78,8 @@ The currently accepted resource names are:
 * color
 * localization
 * font
-        
+* raw
+
 Accepted version formats are:
 * [major].[minor].[patch]          eg. 1.2.0
 * [major].[minor].[patch]+         eg. 1.2.0+ (not available in strict mode)
@@ -93,9 +95,15 @@ server "https://app.respresso.io"
 ```
 
 ###### strictMode
-Enabling strict mode will guarantee you get the same results each time you sync your assets. If set to true, you may only specify exact version numbers in your Respressofile. This option is set to false by default. Usage example:  
+Enabling strict mode will guarantee you get the same results each time you sync your assets. If set to true, you may only specify exact version numbers in your Respressofile. This option is set to false by default. Usage example:
 ```
 strictMode true
+```
+
+###### enabled
+You can turn off synchronization. Default value is true.
+```
+enabled false
 ```
 
 ## Tips
@@ -106,44 +114,42 @@ Android Studio may sometimes ignore new resource files. If this is the case, use
 You can create a new module for Respresso. Respresso will synchronize all followed resources into the "module's res" folder in this case and your main module can contain unique resources.
 
 # Live Localization
-Respresso serve a real-time preview about your localized strings. It shows you that how the translations are going to look like in your mobile app or web. You don't have to wait for a next deployment.
+Respresso serve a real-time preview about your localized strings. It shows you that how the translations are going to look like in your mobile app or web. No need to wait for a next deployment.
 
-# Obligation
+## Obligation
 Live localization is a higher abstraction layer over Respresso core. That is why Respresso usage is mandatory.
 
-# Usage
+## Usage
 
 Add this dependency in your app's build.gradle (app/build.gradle):
 
 ```groovy
- 
-    dependencies {
-		...
-        implementation "hu.ponte.respresso:live-edit-android:0.0.11"
-		...
-    }
+dependencies {
+	...
+	implementation "hu.ponte.respresso:live-edit-android:1.0.0"
+	...
+}
 ```
 
-## How to turn on/off Respresso live
+## How to turn on/off
 Use this snipet if you would like to build your apk without live localization option.
 ```groovy
- 
-	buildTypes {
-		...
-		develop {
-			buildConfigField "Boolean", "RespressoPreRelease", 'true'
-		}
-		release {
-			buildConfigField "Boolean", "RespressoPreRelease", 'false'
-		}
+buildTypes {
+	...
+	develop {
+		buildConfigField "Boolean", "RespressoPreRelease", 'true'
 	}
+	release {
+		buildConfigField "Boolean", "RespressoPreRelease", 'false'
+	}
+}
 ```
 
-## Setting up Respresso Live
+## How to setting up
 Create an application class and register it in your manifest file. Append this snipet into the class:  
 Kotlin:
 ```Koltlin
-	override fun onCreate() {
+override fun onCreate() {
 	super.onCreate()
 
 	Respresso.init(this, BuildConfig.RespressoPreRelease)
@@ -152,52 +158,52 @@ Kotlin:
 
 Java:
 ```Java
-	@Override
-	public void onCreate() {
-		super.onCreate();
+@Override
+public void onCreate() {
+	super.onCreate();
 
-		Respresso.init(this, BuildConfig.RespressoPreRelease);
-    }
+	Respresso.init(this, BuildConfig.RespressoPreRelease);
+}
 ```
 
-Use these configurations in you activity. (It's recommended that use a BaseActivity).
+Use these configurations in you activity. (It's recommended that use a BaseActivity).  
 Kotlin:
 ``` Kotlin
-	override fun attachBaseContext(newBase: Context) {
-        val context = Respresso.wrapContext(newBase)
-        super.attachBaseContext(context)
-    }
+override fun attachBaseContext(newBase: Context) {
+	val context = Respresso.wrapContext(newBase)
+	super.attachBaseContext(context)
+}
 
-    override fun onResume() {
-        super.onResume()
-        Respresso.create(this)
-    }
+override fun onResume() {
+	super.onResume()
+	Respresso.create(this)
+}
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Respresso.destroy(this)
-    }
-	
+override fun onDestroy() {
+	super.onDestroy()
+	Respresso.destroy(this)
+}
+
 ```
-Java: 
-``` Java 
-	@Override
-    protected void attachBaseContext(Context newBase) {
-        Context context = Respresso.wrapContext(newBase);
-        super.attachBaseContext(context);
-    }
+Java:
+``` Java
+@Override
+protected void attachBaseContext(Context newBase) {
+	Context context = Respresso.wrapContext(newBase);
+	super.attachBaseContext(context);
+}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Respresso.create(this);
-    }
+@Override
+protected void onResume() {
+	super.onResume();
+	Respresso.create(this);
+}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Respresso.destroy(this);
-    }
+@Override
+protected void onDestroy() {
+	super.onDestroy();
+	Respresso.destroy(this);
+}
 ```
 
 ## Update text in a view
@@ -220,13 +226,13 @@ Respresso.with(context).text()  -> instead of view.setText()
 Respresso.with(context).hint()  -> instead of view.hint()
 Respresso.with(context).title() -> instead of Toolbar/ActionBar/MenuItem.setTitle()
 etc.
- 
+
 and you concatenate more modifiers when a view has more options, like an EditTextView:
 Respresso.with(context).text(R.string.text_id_from_strings_xml).hint(R.string.hint_id_from_strings_xml).withAutoUpdate().into(edit_text_view)
 
 ### Update text in a CustomView
-Some cases Respresso unable to fill the view with demanded text(s). Don't worry, You can get notification about changes. 
-Use this form in case of single text: 
+Some cases Respresso unable to fill the view with demanded text(s). Don't worry, You can get notification about changes.
+Use this form in case of single text:
 
 ``` Kotlin
 Respresso.with(context).string(R.string.text_id_from_strings_xml).into(view).dataReadyText = { view.setTextSomehow = it }
@@ -234,29 +240,31 @@ Respresso.with(context).string(R.string.text_id_from_strings_xml).into(view).dat
 
 ```Java
 Respresso.with(context).string(R.string.text_id_from_strings_xml).into(view).setOnDataReadyText(new DataReadyText() {
-            @Override
-            public void onDataReady(@Nullable String text) {
-                view.setTextSomehow(text)
-            }
-        });
+	@Override
+	public void onDataReady(@Nullable String text) {
+		view.setTextSomehow(text)
+	}
+});
 ```
-Use this form in case of multiple texts: 
+Use this form in case of multiple texts:  
+Kotlin:
 ``` Kotlin
 Respresso.with(context).strings(arrayOf(
 			RespressoStrings(R.string.first_text_id_from_strings_xml)
 			RespressoStrings(R.string.second_text_id_from_strings_xml, "TAG")
 		)
-	).into(view).dataReadyTexts = { 
+	).into(view).dataReadyTexts = {
 		view.setTextSomehow1 = it[0].text
 		if(it[1].TAG == "TAG")
 			view.setTextSomehow2 = it[1].text
 	}
 ```
 
+Java:
 ```Java
-	Respresso.with(this).strings(new RespressoStrings[]{
-                new RespressoStrings(R.string.name, 1),
-                new RespressoStrings(R.string.name, 2)
+Respresso.with(this).strings(new RespressoStrings[]{
+			new RespressoStrings(R.string.name, 1),
+			new RespressoStrings(R.string.name, 2)
         }).into(tv1).setOnDataReadyTexts(new DataReadyTexts() {
             @Override
             public void onDataReady(@Nullable RespressoText[] texts) {
@@ -281,28 +289,34 @@ noUpdate will fill your view only once. It is not send notification and not upda
 Respresso.with(context).text(R.string.id).noUpdate().into(view)
 ```
 
-# Next steps
+### How to use it
 1. Check above instructions
 2. Go to respresso(https://app.respresso.io) sign in and choose a project
-3. Select localization in the left panel and click the preferred version
-4. Click on the Live Editor button on the top right area
-
-5. Get your phone and shake it.
-6. Switch on Localization in the popup window
-7. Now your modifications are going to appearance after you push the save button on the web
-
-8. Shake your phone again if it is need and switch on QR
-9. Scan the QR Code which visible in your web browser's top right section
+3. Click localization in the left panel and select the same version that you synked into your project 
+4. Get your phone and shake it
+5. Switch on 'Localization / Connection' in the popup window
+> Now your modifications are going to appearance when you click the 'Save' button on the web
+6. For using Live Edit Module\* shake your phone again and switch on 'Localization / Live Editor' in the popup window
+7. On web click on the 'Live Editor' button on the top right area
+8. Scan the QR Code with your phone which visible in your web browser's top right section
 
 Let see what happened after 7th option. You activated a visible items filter and your list have less elements than before and don't have to use Save button to get updated texts. Be careful, this modification stored just in your phone's memory and you can lose it. Use the Save button to store your modifications. 
 
+\* Live Edit Module: shows real-time preview how the translations will look like in your mobile app. Check the translations’ accuracy, length and the UI experience in real-time.
+
 # Licence
 ```
-Copyright 2019 Ponte.hu Kft.
+Copyright 2019 Ponte.hu Kft
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
