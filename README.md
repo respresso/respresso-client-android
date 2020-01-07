@@ -26,7 +26,7 @@ Respresso currently supports six types of resources:
 	- [Update text in a view](#update-text-in-a-view)  
 
 ## Usage
-The plugin aar needs to be defined in the classpath of your build script. It is directly available on Maven central. This snippet shows how to add repositories to your root build.gradle:
+The plugin aar needs to be defined in the classpath of your build script. It is directly available on Maven central. This snippet shows how to add repositories to your root `build.gradle`:
 ```groovy
 buildscript {
 
@@ -36,7 +36,7 @@ buildscript {
 }
 ```
 
-To use the Respresso Android plugin, include this snippet in your app's build.gradle (app/build.gradle):
+To use the Respresso Android plugin, include this snippet in your app's build.gradle (`app/build.gradle`):
 ```groovy
 apply plugin: "hu.ponte.respresso"
 
