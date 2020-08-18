@@ -1,8 +1,7 @@
 package hu.ponte.hellorespresso
 
-import android.app.Activity
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import hu.ponte.mobile.respresso.live_edit.Respresso
 
 open class BaseActivity : AppCompatActivity() {
